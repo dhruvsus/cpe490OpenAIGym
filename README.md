@@ -17,3 +17,7 @@ Approach:
   * Policy gradient algorithm
   * Q learning
   * Deep Q learning
+
+d = p1*(position_of_cart) + p2*(velocity_of_cart) + p3*(angle_of_pole) + p4*(rotation_rate)
+if d > 0 ==> move right
+else ==> move left
