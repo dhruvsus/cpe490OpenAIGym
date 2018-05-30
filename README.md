@@ -12,7 +12,7 @@ Solving conditions:
 
 
 Approach:
-  * Simple linear model (weighted sum)
+  * Simple linear model (randomly chosen parameters; weighted sum)
   * Hill-climbing algorithm
   * Policy gradient algorithm
   * Q learning
