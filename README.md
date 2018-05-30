@@ -9,3 +9,11 @@ Stopping conditions:
 
 Solving conditions:
   * average reward of 195.00 over 100 trials
+
+
+Approach:
+  * Simple linear model (weighted sum)
+  * Hill-climbing algorithm
+  * Policy gradient algorithm
+  * Q learning
+  * Deep Q learning
