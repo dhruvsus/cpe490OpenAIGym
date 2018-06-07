@@ -5,6 +5,7 @@ from keras import layers
 from keras import backend as K
 from keras import utils as np_utils
 from keras import optimizers
+from matplotlib import pyplot as plt
 
 
 def build_network(num_inputs, num_outputs):
@@ -85,18 +86,37 @@ def run_episode(env, train, model, num_outputs):
     return total_reward
 
 
+def reset_model(model):
+    session = K.get_session()
+    for layer in model.layers:
+        if hasattr(layer, 'kernel_initializer'):
+            layer.kernel.initializer.run(session=session)
+
+
 def main():
-    env = gym.make("CartPole-v1")
+    env = gym.make("CartPole-v0")
+    env._max_episode_steps = 200
     num_inputs = env.observation_space.shape[0]
     num_outputs = env.action_space.n
     model = build_network(num_inputs, num_outputs)
     train = build_train(model, num_outputs)
 
-    for episode in range(1000):
-        reward = run_episode(env, train, model, num_outputs)
-        print(episode, reward)
+    steps_per_sample = []
+    for sample in range(10):
+        for episode in range(5000):
+            reward = run_episode(env, train, model, num_outputs)
+            if reward == env._max_episode_steps:
+                print("Found reward {} after {} episodes".format(reward, episode))
+                steps_per_sample.append(episode)
+                break
+        reset_model(model)
 
-    
+    plt.hist(steps_per_sample)
+    plt.title('Policy Gradient Algorithm')
+    plt.xlabel('Episodes')
+    plt.ylabel('Frequency')
+    plt.show()
+     
 
 
     env.close()
