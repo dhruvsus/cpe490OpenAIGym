@@ -39,9 +39,9 @@ max_steps = 200  # max steps in an episode
 gamma = 0.99  # future reward discount
 batch_size = 32  # experience mini-batch size
 pretrain_length = batch_size  # number experiences to pretrain the memory
-estart=1.0
-estop=0.1
-edecay=0.0001
+estart = 1.0
+estop = 0.1
+edecay = 0.0001
 mainQN = DQNetwork()
 #resest environment before starting to build memory
 env.reset()
@@ -67,7 +67,7 @@ for ii in range(pretrain_length):
         memory.learn((state, action, reward, next_state))
         state = next_state
 step = 0
-steps_per_sample=[]
+steps_per_sample = []
 # starting episodes from 1
 for ep in range(1, train_episodes):
     total_reward = 0
@@ -75,7 +75,7 @@ for ep in range(1, train_episodes):
     while t < max_steps:
         step += 1
         # env.render()
-        e_p = estop + (estart - estop)*np.exp(-edecay*step)
+        e_p = estop + (estart - estop) * np.exp(-edecay * step)
         if e_p > np.random.rand():
             # Make a random action
             action = env.action_space.sample()
@@ -90,7 +90,10 @@ for ep in range(1, train_episodes):
         total_reward += reward
         if done:
             next_state = np.zeros(state.shape)
-            steps_per_sample.append(step)
+            # sum_of_gp = 86.6  # 1+summation from t=1 to 200 0.99^t*1
+            # if total_reward >= sum_of_gp:
+            #     steps_per_sample.append(t)
+            steps_per_sample.append(t)
             t = max_steps
             print('Episode: {}'.format(ep),
                   'Total reward: {}'.format(total_reward))
@@ -126,6 +129,6 @@ for ep in range(1, train_episodes):
 print(steps_per_sample)
 plt.hist(steps_per_sample)
 plt.title('DQN Algorithm')
-plt.xlabel('Episodes')
+plt.xlabel('Episodes to Complete')
 plt.ylabel('Frequency')
 plt.savefig('dqn.png')
