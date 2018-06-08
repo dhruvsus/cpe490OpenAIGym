@@ -39,7 +39,9 @@ max_steps = 200  # max steps in an episode
 gamma = 0.99  # future reward discount
 batch_size = 32  # experience mini-batch size
 pretrain_length = batch_size  # number experiences to pretrain the memory
-
+estart=1.0
+estop=0.1
+edecay=0.0001
 mainQN = DQNetwork()
 #resest environment before starting to build memory
 env.reset()
@@ -73,16 +75,22 @@ for ep in range(1, train_episodes):
     while t < max_steps:
         step += 1
         # env.render()
+        e_p = estop + (estart - estop)*np.exp(-edecay*step)
+        if e_p > np.random.rand():
+            # Make a random action
+            action = env.action_space.sample()
+        else:
+            # Get action from Q-network
+            Qs = mainQN.model.predict(state)[0]
+            action = np.argmax(Qs)
 
-        action = env.action_space.sample()
+        # Take action, get new state and reward
         next_state, reward, done, _ = env.step(action)
         next_state = np.reshape(next_state, [1, 4])
         total_reward += reward
-
         if done:
-            # the episode ends so no next state
             next_state = np.zeros(state.shape)
-            steps_per_sample.append(t)
+            steps_per_sample.append(step)
             t = max_steps
             print('Episode: {}'.format(ep),
                   'Total reward: {}'.format(total_reward))
@@ -115,7 +123,7 @@ for ep in range(1, train_episodes):
             targets[i] = mainQN.model.predict(state_b)
             targets[i][action_b] = target
         mainQN.model.fit(inputs, targets, epochs=1, verbose=0)
- #print(steps_per_sample)
+print(steps_per_sample)
 plt.hist(steps_per_sample)
 plt.title('DQN Algorithm')
 plt.xlabel('Episodes')
