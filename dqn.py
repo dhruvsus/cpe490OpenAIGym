@@ -34,7 +34,7 @@ class Memory():
         return [self.b[i] for i in idx]
 
 
-train_episodes = 4  # max number of episodes to learn from
+train_episodes = 10  # max number of episodes to learn from
 max_steps = 200  # max steps in an episode
 gamma = 0.99  # future reward discount
 batch_size = 32  # experience mini-batch size
@@ -65,11 +65,11 @@ for ii in range(pretrain_length):
         memory.learn((state, action, reward, next_state))
         state = next_state
 step = 0
+steps_per_sample=[]
 # starting episodes from 1
 for ep in range(1, train_episodes):
     total_reward = 0
     t = 0
-    steps_per_sample = []
     while t < max_steps:
         step += 1
         # env.render()
@@ -82,10 +82,10 @@ for ep in range(1, train_episodes):
         if done:
             # the episode ends so no next state
             next_state = np.zeros(state.shape)
-            steps_per_sample.append(total_reward)
+            steps_per_sample.append(t)
             t = max_steps
-            print('Episode: {}'.format(ep),
-                  'Total reward: {}'.format(total_reward))
+            # print('Episode: {}'.format(ep),
+            #       'Total reward: {}'.format(total_reward))
             # Add experience to memory
             memory.learn((state, action, reward, next_state))
             # Start new episode
@@ -115,6 +115,7 @@ for ep in range(1, train_episodes):
             targets[i] = mainQN.model.predict(state_b)
             targets[i][action_b] = target
         mainQN.model.fit(inputs, targets, epochs=1, verbose=0)
+print(steps_per_sample)
 plt.hist(steps_per_sample)
 plt.title('DQN Algorithm')
 plt.xlabel('Episodes')

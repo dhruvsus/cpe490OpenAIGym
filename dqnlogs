@@ -1,4 +1,2 @@
 [33mWARN: gym.spaces.Box autodetected dtype as <class 'numpy.float32'>. Please provide explicit dtype.[0m
-Episode: 1 Total reward: 8.0
-Episode: 2 Total reward: 11.0
-Episode: 3 Total reward: 20.0
+[1, 15, 26, 11, 13, 34, 14, 30, 10]
