@@ -102,7 +102,7 @@ def main():
     train = build_train(model, num_outputs)
 
     steps_per_sample = []
-    for sample in range(10):
+    for sample in range(200):
         for episode in range(5000):
             reward = run_episode(env, train, model, num_outputs)
             if reward == env._max_episode_steps:
