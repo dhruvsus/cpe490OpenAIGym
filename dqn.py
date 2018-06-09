@@ -34,7 +34,7 @@ class Memory():
         return [self.b[i] for i in idx]
 
 
-train_episodes = 500  # max number of episodes to learn from
+train_episodes = 1000  # max number of episodes to learn from
 max_steps = 200  # max steps in an episode
 gamma = 0.99  # future reward discount
 batch_size = 32  # experience mini-batch size
@@ -90,9 +90,9 @@ for ep in range(1, train_episodes):
         total_reward += reward
         if done:
             next_state = np.zeros(state.shape)
-            # sum_of_gp = 86.6  # 1+summation from t=1 to 200 0.99^t*1
-            # if total_reward >= sum_of_gp:
-            #     steps_per_sample.append(t)
+            sum_of_gp = 198
+            if total_reward >= sum_of_gp:
+                steps_per_sample.append(t)
             steps_per_sample.append(t)
             t = max_steps
             print('Episode: {}'.format(ep),
